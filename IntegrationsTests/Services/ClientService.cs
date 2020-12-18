@@ -94,7 +94,7 @@ namespace IntegrationsTests.Services
         /// </summary>
         protected abstract void CheckThatResponseBodyIsPopulated();
 
-        protected abstract void GetResponseHeaders();
+        //protected abstract void GetResponseHeaders();
 
         /// <summary>
         /// 
