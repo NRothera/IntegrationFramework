@@ -18,7 +18,7 @@ namespace IntegrationsTests.Steps
     [Binding]
     public class PostsSteps
     {
-        private RestPostsService _restPostService;
+        private PostsService _restPostService;
         private RestClientFactory _restClientFactory;
         private string _id;
 
@@ -37,7 +37,7 @@ namespace IntegrationsTests.Steps
             var segments = new Dictionary<string, string> { { path.replaceableSegments.First(), _id.ToString() } };
             path.urlSegments = segments;
 
-            _restPostService = _restClientFactory.Get<RestPostsService>(new GetPostRequest(new RESTHeaders(), path), "BasePostUrl");
+            _restPostService = _restClientFactory.Get<PostsService>(new GetPostRequest(new RESTHeaders(), path), "BasePostUrl");
             _restPostService.Invoke(true);
         }
 

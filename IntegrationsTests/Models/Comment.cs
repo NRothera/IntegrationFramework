@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace IntegrationsTests.Models
 {
-    public class Comments
+    public class Comment
     {
         [JsonProperty("PostId")]
          public string PostId { get; set; }

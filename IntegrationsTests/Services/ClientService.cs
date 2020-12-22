@@ -97,7 +97,6 @@ namespace IntegrationsTests.Services
         //protected abstract void GetResponseHeaders();
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="expectedResponseContent"></param>
         protected void CheckThatResponseBodyIsPopulated(Object expectedResponseContent)
