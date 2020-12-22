@@ -15,7 +15,7 @@ using FluentAssertions;
 
 namespace IntegrationsTests.Steps
 {
-    [Binding]
+    
     public class PostsSteps
     {
         private PostsService _restPostService;

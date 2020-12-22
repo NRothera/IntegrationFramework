@@ -25,7 +25,7 @@ namespace IntegrationsTests.Config
 
         public IConfiguration Configuration { get; }
         public string BasePostUrl => Configuration["BasePostUrl"];
-        public string BaseCountryUrl => Configuration["BaseCountryUrl"];
+        public string BaseCommentUrl => Configuration["BaseCommentUrl"];
         
         public string GetResource(string key)
         {

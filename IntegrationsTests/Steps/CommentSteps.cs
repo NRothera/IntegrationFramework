@@ -15,6 +15,7 @@ using FluentAssertions;
 
 namespace IntegrationsTests.Steps
 {
+    [Binding]
     public class CommentSteps
     {
         private CommentsService _restPostService;
@@ -27,5 +28,32 @@ namespace IntegrationsTests.Steps
             var config = new TestConfiguration();
             _restClientFactory = new RestClientFactory(client, config);
         }
+
+        [Given(@"I request a comment with id (.*)")]
+        public void GivenIRequestACommentWithId(int i)
+        {
+            _id = i.ToString();
+            var path = new GetCommentPathParams(CommentPaths.GetCommentId);
+            var segments = new Dictionary<string, string> { { path.replaceableSegments.First(), _id.ToString() } };
+            path.urlSegments = segments;
+
+            _restPostService = _restClientFactory.Get<CommentsService>(new GetCommentRequest(new RESTHeaders(), path), "BaseCommentUrl");
+            _restPostService.Invoke(true);
+        }
+
+        [Then(@"the ""(.*)"" response contains all the required properties")]
+        public void ThenTheResponseContainsAllTheRequiredProperties(string p0)
+        {
+            var response = _restPostService.CommentResponse.Comments;
+
+            foreach (var comment in response)
+            {
+                comment.Name.Should().BeOfType(typeof(string));
+                //IsValidEmail(comment.Email).Should().BeTrue();
+                comment.PostId.Should().BeOfType(typeof(string));
+            }
+        }
+
+
     }
 }
