@@ -21,17 +21,21 @@ namespace IntegrationsTests.Steps
         private CommentsService _restPostService;
         private RestClientFactory _restClientFactory;
         private string _id;
+        private TestConfiguration _config;
 
         public CommentSteps()
         {
+            _config = new TestConfiguration();
             var client = new RestClient();
-            var config = new TestConfiguration();
-            _restClientFactory = new RestClientFactory(client, config);
+            _restClientFactory = new RestClientFactory(client, _config);
         }
 
         [Given(@"I request a comment with id (.*)")]
         public void GivenIRequestACommentWithId(int i)
         {
+            Console.WriteLine(_config.ExampleName);
+            Console.WriteLine(_config.ExampleTwo);
+            
             _id = i.ToString();
             var path = new GetCommentPathParams(CommentPaths.GetCommentId);
             var segments = new Dictionary<string, string> { { path.replaceableSegments.First(), _id.ToString() } };

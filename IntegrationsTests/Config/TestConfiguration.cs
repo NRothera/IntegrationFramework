@@ -17,7 +17,10 @@ namespace IntegrationsTests.Config
             var builder = new ConfigurationBuilder()
                 .AddJsonFile($"{path}/appsettings.json",
                              optional: true,
-                             reloadOnChange: true);
+                             reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            builder.AddUserSecrets<TestConfiguration>(true);
 
             Configuration = builder.Build();
 
@@ -26,7 +29,8 @@ namespace IntegrationsTests.Config
         public IConfiguration Configuration { get; }
         public string BasePostUrl => Configuration["BasePostUrl"];
         public string BaseCommentUrl => Configuration["BaseCommentUrl"];
-        
+        public string ExampleName => Configuration["ExampleName"];
+        public string ExampleTwo => Configuration["Example-Two"];
         public string GetResource(string key)
         {
             return Configuration[key];
