@@ -20,8 +20,8 @@ namespace IntegrationsTests.Services
         protected RestResponse response;
         private bool successful;
         public string resource;
-        private RestRequest restRequest;
-        private CookieContainer _cookieJar = new CookieContainer();
+        private RestRequest _restRequest;
+        private readonly CookieContainer _cookieJar = new CookieContainer();
         public ITestConfiguration config;
 
         public ClientService(IRequest request, RestClient client, string resource, ITestConfiguration config)
@@ -40,8 +40,8 @@ namespace IntegrationsTests.Services
         /// </summary>
         public void Invoke(bool expectSuccess)
         {
-            restRequest = new RestRequest(request.GetHttpMethod());
-            restRequest.Resource = resource;
+            _restRequest = new RestRequest(request.GetHttpMethod());
+            _restRequest.Resource = resource;
 
             if (request.GetQueryParameters() != null)
             {
@@ -117,7 +117,7 @@ namespace IntegrationsTests.Services
 
             foreach (var header in request.GetHeaders().Headers)
             {
-                restRequest.AddHeader(header.Name, header.Value);
+                _restRequest.AddHeader(header.Name, header.Value);
             }
 
             switch (request.GetHttpMethod())
@@ -126,17 +126,17 @@ namespace IntegrationsTests.Services
 
                     break;
                 case Method.POST:
-                    restRequest.RequestFormat = DataFormat.Json;
-                    restRequest.AddJsonBody(request.GetRequestBody());
+                    _restRequest.RequestFormat = DataFormat.Json;
+                    _restRequest.AddJsonBody(request.GetRequestBody());
                     break;
                 case Method.PUT:
                     try
                     {
-                        restRequest.AddJsonBody(request.GetRequestBody());
+                        _restRequest.AddJsonBody(request.GetRequestBody());
                     }
                     catch
                     {
-                        restRequest.AddJsonBody(request.GetRequestBody());
+                        _restRequest.AddJsonBody(request.GetRequestBody());
                     }
                     break;
                 case Method.DELETE:
@@ -146,7 +146,7 @@ namespace IntegrationsTests.Services
             try
             {
                 stopWatch.Start();
-                response = client.Execute(restRequest);
+                response = client.Execute(_restRequest);
                 stopWatch.Stop();
 
                 return response as RestResponse;
@@ -157,7 +157,7 @@ namespace IntegrationsTests.Services
             }
             finally
             {
-                LogRequest(restRequest, response, stopWatch.ElapsedMilliseconds);
+                LogRequest(_restRequest, response, stopWatch.ElapsedMilliseconds);
             }
 
             return null;
@@ -179,16 +179,14 @@ namespace IntegrationsTests.Services
         /// </summary>
         private void AddPathParams()
         {
-            restRequest.Resource = restRequest.Resource.ToString() + request.GetPathParameters().resource;
-            if (request.GetPathParameters().replaceableSegments.Count() > 0)
+            _restRequest.Resource = _restRequest.Resource.ToString() + request.GetPathParameters().resource;
+            if (!request.GetPathParameters().replaceableSegments.Any()) return;
+            foreach (string segment in request.GetPathParameters().replaceableSegments)
             {
-                foreach (string segment in request.GetPathParameters().replaceableSegments)
-                {
-                    //check that any specified as replacable are actually replaced
-                    request.GetPathParameters().urlSegments.Where(x => x.Key == segment).FirstOrDefault().Should().NotBeNull("URL Segement defined as pathParameter has not been replaced: " + segment);
-                    KeyValuePair<string, string> pathParam = request.GetPathParameters().urlSegments.Where(x => x.Key == segment).FirstOrDefault();
-                    restRequest.AddParameter(pathParam.Key, pathParam.Value, ParameterType.UrlSegment);
-                }
+                //check that any specified as replacable are actually replaced
+                request.GetPathParameters().urlSegments.Where(x => x.Key == segment).FirstOrDefault().Should().NotBeNull("URL Segement defined as pathParameter has not been replaced: " + segment);
+                KeyValuePair<string, string> pathParam = request.GetPathParameters().urlSegments.Where(x => x.Key == segment).FirstOrDefault();
+                _restRequest.AddParameter(pathParam.Key, pathParam.Value, ParameterType.UrlSegment);
             }
         }
 
@@ -199,7 +197,7 @@ namespace IntegrationsTests.Services
         {
             foreach (KeyValuePair<string, string> queryParam in request.GetQueryParameters().getParameters())
             {
-                restRequest.AddQueryParameter(queryParam.Key, queryParam.Value);
+                _restRequest.AddQueryParameter(queryParam.Key, queryParam.Value);
             }
         }
 
@@ -232,10 +230,10 @@ namespace IntegrationsTests.Services
                 errorMessage = response.ErrorMessage,
             };
 
-            Console.WriteLine(string.Format("Request completed in {0} ms \r\n Request: \r\n {1} \r\n Response: \r\n {2}",
-                    durationMs,
-                    JsonConvert.SerializeObject(requestToLog, Formatting.Indented, new JsonConverter[] { new StringEnumConverter() }),
-                    JsonConvert.SerializeObject(responseToLog, Formatting.Indented, new JsonConverter[] { new StringEnumConverter() })));
+            Console.WriteLine(
+                $"Request completed in {durationMs} ms \r\n Request: \r\n " +
+                $"{JsonConvert.SerializeObject(requestToLog, Formatting.Indented, new JsonConverter[] {new StringEnumConverter()})} " +
+                $"\r\n Response: \r\n {JsonConvert.SerializeObject(responseToLog, Formatting.Indented, new JsonConverter[] {new StringEnumConverter()})}");
 
         }
 
