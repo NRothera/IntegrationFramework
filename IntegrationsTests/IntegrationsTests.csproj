@@ -35,4 +35,9 @@
     <Folder Include="Services\Request Bodies\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <SpecFlowFeatureFiles Update="Features\Comments.feature">
+      <Visible>False</Visible>
+    </SpecFlowFeatureFiles>
+  </ItemGroup>
 </Project>

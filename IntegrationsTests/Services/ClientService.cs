@@ -97,7 +97,6 @@ namespace IntegrationsTests.Services
         //protected abstract void GetResponseHeaders();
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="expectedResponseContent"></param>
         protected void CheckThatResponseBodyIsPopulated(Object expectedResponseContent)
@@ -239,7 +238,7 @@ namespace IntegrationsTests.Services
 
         public T Get<T>(Request request, string configKey) where T : ClientService
         {
-            client.BaseUrl = new Uri(config.GetResource(configKey));
+            client.BaseUrl = new Uri(config.GetResource(configKey).ToString());
 
             return (T)Activator.CreateInstance(typeof(T), request, client, config);
         }

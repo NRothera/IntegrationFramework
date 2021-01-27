@@ -16,7 +16,7 @@ namespace IntegrationsTests.Services.PathParameters
 
         /// <summary>
         /// <para>The resource part of the URL, eg "/flight"</para>
-        /// <para>Replaceable parts of the URL should be in curly braces, eg "/flight/{flight-id}</para>
+        /// <para>Replaceable parts of the URL should be in curly braces, eg "/post/{post-id}</para>
         /// </summary>
         public String resource
         {
@@ -38,7 +38,7 @@ namespace IntegrationsTests.Services.PathParameters
         public List<string> replaceableSegments { get; private set; }
 
         /// <summary>
-        /// A dictionary of replaceable URL segments and their value, eg "flight-id, 100"
+        /// A dictionary of replaceable URL segments and their value, eg "post-id, 100"
         /// </summary>
         public Dictionary<string, string> urlSegments { get; set; }
     }

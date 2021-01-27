@@ -33,7 +33,7 @@ namespace IntegrationsTests.Factories
 
         public T Get<T>(Request request, string configKey) where T : ClientService
         {
-            client.BaseUrl = new Uri(config.GetResource(configKey));
+            client.BaseUrl = new Uri(config.GetResource(configKey).ToString());
 
             return (T)Activator.CreateInstance(typeof(T), request, client, config);
         }

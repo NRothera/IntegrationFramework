@@ -10,11 +10,11 @@ using IntegrationsTests.Models;
 
 namespace IntegrationsTests.Services
 {
-    public class RestPostsService : ClientService
+    public class PostsService : ClientService
     {
         public GetPostResponse PostResponse { get; set; }
 
-        public RestPostsService(Request request, RestClient client, ITestConfiguration config)
+        public PostsService(Request request, RestClient client, ITestConfiguration config)
             : base(request, client, config.BasePostUrl, config)
         {
         }
